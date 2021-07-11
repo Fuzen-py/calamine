@@ -17,6 +17,7 @@ pub enum Error {
     /// vba specific error
     Vba(crate::vba::VbaError),
     /// cfb specific error
+    #[cfg(feature = "deserializer")]
     De(crate::de::DeError),
 
     /// General error message
@@ -29,6 +30,7 @@ from_err!(crate::xls::XlsError, Error, Xls);
 from_err!(crate::xlsb::XlsbError, Error, Xlsb);
 from_err!(crate::xlsx::XlsxError, Error, Xlsx);
 from_err!(crate::vba::VbaError, Error, Vba);
+#[cfg(feature = "deserializer")]
 from_err!(crate::de::DeError, Error, De);
 from_err!(&'static str, Error, Msg);
 
@@ -41,6 +43,7 @@ impl std::fmt::Display for Error {
             Error::Xlsx(e) => write!(f, "Xlsx error: {}", e),
             Error::Xlsb(e) => write!(f, "Xlsb error: {}", e),
             Error::Vba(e) => write!(f, "Vba error: {}", e),
+            #[cfg(feature = "deserializer")]
             Error::De(e) => write!(f, "Deserializer error: {}", e),
             Error::Msg(msg) => write!(f, "{}", msg),
         }
@@ -56,6 +59,7 @@ impl std::error::Error for Error {
             Error::Xlsb(e) => Some(e),
             Error::Xlsx(e) => Some(e),
             Error::Vba(e) => Some(e),
+            #[cfg(feature = "deserializer")]
             Error::De(e) => Some(e),
             _ => None,
         }

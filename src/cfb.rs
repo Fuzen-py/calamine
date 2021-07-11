@@ -221,8 +221,8 @@ impl Header {
                 version,
                 sector_size,
                 dir_len,
-                fat_len,
                 dir_start,
+                fat_len,
                 mini_fat_len,
                 mini_fat_start,
                 difat_start,
@@ -308,7 +308,7 @@ impl Directory {
             read_u64(&buf[120..128]).try_into().unwrap()
         };
 
-        Directory { start, len, name }
+        Directory { name, start, len }
     }
 }
 
@@ -420,8 +420,7 @@ pub struct XlsEncoding {
 
 impl XlsEncoding {
     pub fn from_codepage(codepage: u16) -> Result<XlsEncoding, CfbError> {
-        let e =
-            codepage::to_encoding(codepage).ok_or_else(|| CfbError::CodePageNotFound(codepage))?;
+        let e = codepage::to_encoding(codepage).ok_or(CfbError::CodePageNotFound(codepage))?;
         Ok(XlsEncoding { encoding: e })
     }
 

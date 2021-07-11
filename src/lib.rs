@@ -69,10 +69,12 @@ mod xls;
 mod xlsb;
 mod xlsx;
 
+#[cfg(feature = "deserializer")]
 mod de;
 mod errors;
 pub mod vba;
 
+#[cfg(feature = "deserializer")]
 use serde::de::DeserializeOwned;
 use std::borrow::Cow;
 use std::cmp::{max, min};
@@ -84,6 +86,7 @@ use std::path::Path;
 
 pub use crate::auto::{open_workbook_auto, Sheets};
 pub use crate::datatype::DataType;
+#[cfg(feature = "deserializer")]
 pub use crate::de::{DeError, RangeDeserializer, RangeDeserializerBuilder, ToCellDeserializer};
 pub use crate::errors::Error;
 pub use crate::ods::{Ods, OdsError};
@@ -544,6 +547,7 @@ impl<T: CellType> Range<T> {
     ///     }
     /// }
     /// ```
+    #[cfg(feature = "deserializer")]
     pub fn deserialize<'a, D>(&'a self) -> Result<RangeDeserializer<'a, T, D>, DeError>
     where
         T: ToCellDeserializer<'a>,

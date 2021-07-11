@@ -1,6 +1,8 @@
 use std::fmt;
 
+#[cfg(feature = "deserializer")]
 use serde::de::Visitor;
+#[cfg(feature = "deserializer")]
 use serde::{self, Deserialize};
 
 use super::CellErrorType;
@@ -33,11 +35,11 @@ impl Default for DataType {
 
 impl DataType {
     /// Assess if datatype is empty
-    pub fn is_empty(&self) -> bool {
-        *self == DataType::Empty
+    pub const fn is_empty(&self) -> bool {
+        matches!(self, &DataType::Empty)
     }
     /// Assess if datatype is a int
-    pub fn is_int(&self) -> bool {
+    pub const fn is_int(&self) -> bool {
         if let DataType::Int(_) = *self {
             true
         } else {
@@ -45,7 +47,7 @@ impl DataType {
         }
     }
     /// Assess if datatype is a float
-    pub fn is_float(&self) -> bool {
+    pub const fn is_float(&self) -> bool {
         if let DataType::Float(_) = *self {
             true
         } else {
@@ -53,7 +55,7 @@ impl DataType {
         }
     }
     /// Assess if datatype is a bool
-    pub fn is_bool(&self) -> bool {
+    pub const fn is_bool(&self) -> bool {
         if let DataType::Bool(_) = *self {
             true
         } else {
@@ -61,7 +63,7 @@ impl DataType {
         }
     }
     /// Assess if datatype is a string
-    pub fn is_string(&self) -> bool {
+    pub const fn is_string(&self) -> bool {
         if let DataType::String(_) = *self {
             true
         } else {
@@ -70,7 +72,7 @@ impl DataType {
     }
 
     /// Try getting int value
-    pub fn get_int(&self) -> Option<i64> {
+    pub const fn get_int(&self) -> Option<i64> {
         if let DataType::Int(v) = self {
             Some(*v)
         } else {
@@ -78,7 +80,7 @@ impl DataType {
         }
     }
     /// Try getting float value
-    pub fn get_float(&self) -> Option<f64> {
+    pub const fn get_float(&self) -> Option<f64> {
         if let DataType::Float(v) = self {
             Some(*v)
         } else {
@@ -86,7 +88,7 @@ impl DataType {
         }
     }
     /// Try getting bool value
-    pub fn get_bool(&self) -> Option<bool> {
+    pub const fn get_bool(&self) -> Option<bool> {
         if let DataType::Bool(v) = self {
             Some(*v)
         } else {
@@ -185,6 +187,7 @@ impl fmt::Display for DataType {
     }
 }
 
+#[cfg(feature = "deserializer")]
 impl<'de> Deserialize<'de> for DataType {
     #[inline]
     fn deserialize<D>(deserializer: D) -> Result<DataType, D::Error>
@@ -324,7 +327,7 @@ mod tests {
 
     #[test]
     fn test_int_dates() {
-        use chrono::{Duration, NaiveDate, NaiveDateTime, NaiveTime};
+        use chrono::{NaiveDate, NaiveDateTime, NaiveTime};
 
         let unix_epoch = DataType::Int(25569);
         assert_eq!(
